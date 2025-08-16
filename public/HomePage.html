@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="style.css">
+    <title>SafeStep - Home</title>
+</head>
+<body>
+<header>
+    <div class="blade"><div></div><div></div><div></div></div>
+    <div class="appname">SafeStep</div>
+</header>
+
+<main>
+    <h2>How can we help you?</h2>
+
+    <form id="promptForm">
+        <select id="projectType">
+            <option value="">Select Project Type (optional)</option>
+            <option>Tech Startup</option>
+            <option>Construction</option>
+            <option>Investment</option>
+            <option>Event</option>
+            <option>Other</option>
+        </select>
+
+        <textarea id="projectPrompt" placeholder="Describe your project..." rows="5"></textarea>
+
+        <button type="submit">Analyze Risks</button>
+    </form>
+
+    <div id="resultsContainer"></div>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
