@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* Reset */
 * {
     margin: 0;
@@ -202,3 +203,110 @@ table tr:hover {
 .low { color: green; font-weight: bold; }
 .medium { color: orange; font-weight: bold; }
 .high { color: red; font-weight: bold; }
+=======
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+/* Top navigation */
+header {
+    display: flex;
+    align-items: center;
+    background-color: #333;
+    color: white;
+    padding: 10px;
+}
+
+.blade {
+    width: 25px;
+    height: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.blade div {
+    height: 3px;
+    background-color: white;
+    border-radius: 2px;
+}
+
+.appname {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+/* Page container */
+main {
+    padding: 15px;
+}
+
+/* Buttons */
+button {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #555;
+}
+
+/* Inputs */
+input, textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 8px;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Slider styling */
+input[type="range"] {
+    width: 100%;
+}
+
+/* Placeholder boxes */
+.box {
+    background-color: white;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+/* Circular placeholder for graphs */
+.circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: white;
+    border: 1px solid #ccc;
+    margin: auto;
+}
+
+/* History items */
+.history-item {
+    background-color: white;
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+}
+>>>>>>> ab62237b4846a3a5f9ff51c087a96ea62fec3b15

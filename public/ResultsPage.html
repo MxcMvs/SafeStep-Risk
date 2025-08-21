@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -61,3 +62,48 @@
   <script src="results.js"></script>
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="style.css">
+    <title>SafeStep - Results</title>
+</head>
+<body>
+<header>
+    <div class="blade">
+        <div></div><div></div><div></div>
+    </div>
+    <div class="appname">SafeStep</div>
+</header>
+<main>
+    <h3>Risk Report</h3>
+    <button onclick="saveReport()">Save</button>
+
+    <table border="1" cellpadding="8" style="width:100%; margin-top:15px;">
+        <thead>
+            <tr>
+                <th>Risk</th>
+                <th>Impact</th>
+                <th>Likelihood</th>
+                <th>Score</th>
+            </tr>
+        </thead>
+        <tbody id="riskTableBody"></tbody>
+    </table>
+
+    <canvas id="riskMatrix" width="400" height="200" style="margin-top:20px;"></canvas>
+    <canvas id="riskGraph" width="400" height="200" style="margin-top:20px;"></canvas>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="charts.js"></script>
+
+<script>
+function saveReport() {
+    alert("Report saved! (In real app, this will store in Firebase)");
+}
+</script>
+</body>
+</html>
+>>>>>>> ab62237b4846a3a5f9ff51c087a96ea62fec3b15
