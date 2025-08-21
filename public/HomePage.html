@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>SafeStep - Home</title>
+
+</head>
+<body>
+    
+<header>
+  <div class="blade">
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+  <span class="appname">SafeStep</span>
+</header>
+
+<!-- Sidebar -->
+<nav id="sidebar">
+  <a href="index.html">Home</a>
+  <a href="history.html">History</a>
+</nav>
+
+
+  <input type="text" id="projectName" placeholder="Project Name"><br><br>
+  <textarea id="projectPrompt" placeholder="Describe your project..." rows="5" cols="50"></textarea><br><br>
+  <button id="analyzeBtn">Analyze Risks</button>
+
+ 
+  <script>
+    document.getElementById("analyzeBtn").addEventListener("click", async () => {
+      const projectName = document.getElementById("projectName").value.trim();
+      const prompt = document.getElementById("projectPrompt").value.trim();
+      if (!projectName || !prompt) return alert("Enter project name and description");
+
+      const res = await fetch("/api/analyze", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt })
+      });
+      const data = await res.json();
+
+      const projectData = { name: projectName, risks: data.risks };
+      localStorage.setItem("projectData", JSON.stringify(projectData));
+      window.location.href = "RatingPage.html";
+    });
+  </script>
+  <script src="blade.js"></script> 
+  <script src="app.js"></script>
+
+</body>
+</html>
