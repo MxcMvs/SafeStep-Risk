@@ -1,22 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>SafeStep - Rate Risks</title>
     <link rel="stylesheet" href="style.css">
+  <title>SafeStep - Rate Risks</title>
 </head>
 <body>
 <header>
-    <div class="blade"><div></div><div></div><div></div></div>
-    <div class="appname">SafeStep</div>
+  <div class="blade">
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+  <span class="appname">SafeStep</span>
 </header>
 
-<main>
-    <h3>Rate Risks</h3>
-    <div id="risksContainer"></div>
-    <button id="calcResultsBtn">Calculate Results</button>
-</main>
+<nav id="sidebar">
+  <a href="HomePage.html">Home</a>
+  <a href="HistoryPage.html">History</a>
+</nav>
 
-<script src="rating.js"></script>
+
+  <h2>Rate Risks for <span id="projectNameDisplay"></span></h2>
+
+  <table border="1" cellpadding="5" id="risksTable">
+    <thead>
+      <tr>
+        <th>Risk</th>
+        <th>Likelihood (1-5)</th>
+        <th>Impact (1-5)</th>
+        <th>Score</th>
+      </tr>
+    </thead>
+    <tbody id="risksContainer"></tbody>
+  </table>
+
+  <button id="goToResults">Go to Results</button>
+
+  <script src="blade.js"></script>
+  <script src="rating.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

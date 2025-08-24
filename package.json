@@ -2,7 +2,7 @@
   "name": "safestep---website",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
@@ -13,10 +13,10 @@
   "type": "module",
   "dependencies": {
     "body-parser": "^2.2.0",
-    "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
-    "openai": "^5.12.2",
+    "openai": "^5.15.0",
+    "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7"
   }
 }

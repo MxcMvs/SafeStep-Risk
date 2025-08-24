@@ -2,20 +2,32 @@
 <html>
 <head>
     <link rel="stylesheet" href="style.css">
-    <title>SafeStep - Dashboard</title>
+    <title>SafeStep - History</title>
 </head>
 <body>
 <header>
-    <div class="blade">
-        <div></div><div></div><div></div>
-    </div>
-    <div class="appname">SafeStep</div>
+  <div class="blade">
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+  <span class="appname">SafeStep</span>
 </header>
+
+
+<nav id="sidebar">
+  <a href="HomePage.html">Home</a>
+  <a href="HistoryPage.html">History</a>
+</nav>
+
+
 <main>
     <h3>Saved Projects</h3>
-
-    <div class="history-item">Project A - 2025-08-14</div>
-    <div class="history-item">Project B - 2025-08-10</div>
+    <div id="historyContainer"></div>
 </main>
+
+<script src="blade.js"></script>
+<script src="history.js"></script>
+<script src="app.js"></script>
 </body>
 </html>

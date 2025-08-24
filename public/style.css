@@ -41,27 +41,73 @@ header {
     font-size: 18px;
 }
 
+/* Sidebar (hidden by default) */
+#sidebar {
+    position: fixed;
+    top: 0;
+    left: -200px; 
+    width: 200px;
+    height: 100%;
+    background-color: #222;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding-top: 60px;
+    transition: left 0.3s ease;
+    z-index: 999;
+}
+
+#sidebar a {
+    padding: 15px 20px;
+    text-decoration: none;
+    color: white;
+    font-size: 16px;
+    border-bottom: 1px solid #444;
+}
+
+#sidebar a:hover {
+    background-color: #444;
+}
+
+/* Active menu */
+#sidebar.active {
+    left: 0;
+}
+
 /* Page container */
 main {
     padding: 15px;
 }
 
-/* Buttons */
+/* Headings */
+h1, h2, h3 {
+    margin-bottom: 15px;
+}
+
+
+button, .view-btn {
+    display: block;         
+        margin: 10px auto;      
+    padding: 10px 20px;
+    font-size: 1em;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+}
+
 button {
     background-color: #333;
     color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
 }
 
 button:hover {
     background-color: #555;
+    transform: translateY(-2px);
 }
 
-/* Inputs */
-input, textarea {
+/* Inputs + Textareas */
+input, textarea, select {
     width: 100%;
     padding: 8px;
     margin-top: 8px;
@@ -70,12 +116,17 @@ input, textarea {
     border-radius: 4px;
 }
 
+textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+
 /* Slider styling */
 input[type="range"] {
     width: 100%;
 }
 
-/* Placeholder boxes */
+/* Boxes */
 .box {
     background-color: white;
     padding: 20px;
@@ -85,7 +136,7 @@ input[type="range"] {
     text-align: center;
 }
 
-/* Circular placeholder for graphs */
+/* Graph placeholder circle */
 .circle {
     width: 80px;
     height: 80px;
@@ -102,4 +153,116 @@ input[type="range"] {
     border-radius: 6px;
     margin-bottom: 10px;
     border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+.history-item:hover {
+    background-color: #eee;
+}
+
+/* Filters section */
+.filters {
+    margin-bottom: 15px;
+}
+
+.filters label {
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.filters-container {
+    display: flex; 
+    gap: 10px;         
+        justify-content: flex-start;
+    margin-bottom: 15px; 
+}
+
+/* Risk table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: white;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+table th, table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+table th {
+    background-color: #333;
+    color: white;
+}
+
+table tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Chart containers */
+.chart-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 25px auto;
+    background-color: white;
+    padding: 20px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+/* Risk score coloring */
+.low { color: green; font-weight: bold; }
+.medium { color: orange; font-weight: bold; }
+.high { color: red; font-weight: bold; }
+
+.history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    margin: 8px 0;
+    background: #f5f5f5;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.project-name {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.view-btn,
+.delete-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.view-btn {
+    background-color: #007bff;
+    color: white;
+}
+
+.view-btn:hover {
+    background-color: #0056b3;
+}
+
+.delete-btn {
+    background-color: #ff4d4d;
+    color: white;
+}
+
+.delete-btn:hover {
+    background-color: #ff1a1a;
 }

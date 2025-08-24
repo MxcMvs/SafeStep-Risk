@@ -1,39 +1,48 @@
+
 document.addEventListener("DOMContentLoaded", () => {
-    const promptForm = document.getElementById("promptForm");
-    const resultsContainer = document.getElementById("resultsContainer");
+  const promptForm = document.getElementById("promptForm");
+  const resultsContainer = document.getElementById("resultsContainer");
 
-    promptForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const prompt = document.getElementById("projectPrompt").value;
+  promptForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-        if (!prompt.trim()) {
-            alert("Please enter a project description.");
-            return;
-        }
+    const projectName = document.getElementById("projectName").value.trim();
+    const prompt = document.getElementById("projectPrompt").value.trim();
 
-        resultsContainer.innerHTML = "<p>Analyzing risks... Please wait.</p>";
+    if (!projectName || !prompt) {
+      alert("Please enter both project name and description.");
+      return;
+    }
 
-        try {
-            const res = await fetch("/api/analyze", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ prompt })
-            });
+    resultsContainer.innerHTML = "<p>Analyzing risks... Please wait.</p>";
 
-            const data = await res.json();
+    try {
+      const res = await fetch("/api/analyze", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt })
+      });
 
-            if (data.error) {
-                resultsContainer.innerHTML = `<p style="color:red;">Error: ${data.error}</p>`;
-                return;
-            }
+      const data = await res.json();
 
-            // Save risks to localStorage and go to RatingPage
-            localStorage.setItem("risksList", JSON.stringify(data.risks));
-            window.location.href = "RatingPage.html";
+      if (data.error) {
+        resultsContainer.innerHTML = `<p style="color:red;">Error: ${data.error}</p>`;
+        return;
+      }
 
-        } catch (err) {
-            console.error(err);
-            resultsContainer.innerHTML = "<p style='color:red;'>An error occurred.</p>";
-        }
-    });
+  
+      const projectData = {
+        name: projectName,
+        risks: data.risks
+      };
+      localStorage.setItem("projectData", JSON.stringify(projectData));
+
+    
+      window.location.href = "RatingPage.html";
+
+    } catch (err) {
+      console.error(err);
+      resultsContainer.innerHTML = "<p style='color:red;'>An error occurred.</p>";
+    }
+  });
 });

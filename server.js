@@ -2,9 +2,9 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
-import OpenAI from "openai";
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
+import os from "os";
 
 dotenv.config();
 
@@ -14,16 +14,18 @@ const __dirname = path.dirname(__filename);
 const app = express();
 app.use(express.json());
 
-// Check API key
-console.log(
-  "OPENAI_API_KEY loaded:",
-  process.env.OPENAI_API_KEY ? "✅" : "❌"
-);
-
-// Initialize OpenAI client
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// === Helper: Get local network IP ===
+function getLocalIP() {
+  const interfaces = os.networkInterfaces();
+  for (const name in interfaces) {
+    for (const iface of interfaces[name]) {
+      if (iface.family === "IPv4" && !iface.internal) {
+        return iface.address;
+      }
+    }
+  }
+  return "localhost";
+}
 
 // === SQLite helper ===
 async function openDB() {
@@ -32,7 +34,6 @@ async function openDB() {
     driver: sqlite3.Database
   });
 
-  // Create tables if they don’t exist
   await db.exec(`
     CREATE TABLE IF NOT EXISTS projects (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -48,6 +49,8 @@ async function openDB() {
       likelihood INTEGER,
       impact INTEGER,
       score INTEGER,
+      mitigation TEXT,
+      last_updated TEXT,
       FOREIGN KEY(project_id) REFERENCES projects(id)
     );
   `);
@@ -55,77 +58,76 @@ async function openDB() {
   return db;
 }
 
-// === AI Risk Analysis Endpoint ===
+// === Dummy Risk Analysis Endpoint ===
 app.post("/api/analyze", async (req, res) => {
   const { prompt } = req.body;
-
   if (!prompt || prompt.trim() === "") {
     return res.status(400).json({ error: "Prompt is required" });
   }
 
-  const systemMessage = `
-You are a project risk analysis assistant. 
-Given a detailed project description, your task is to:
-1. Identify potential risks that could impact the project.
-2. List each risk as a short, clear bullet point.
-3. Avoid numbering, explanations, or extra text — only one risk per line.
-4. Keep the response concise and actionable.
-`;
+  const dummyRisks = [
+    {
+      risk: "Budget overrun",
+      likelihood: 3,
+      impact: 4,
+      score: 12,
+      mitigation: "",
+      lastUpdated: new Date().toLocaleDateString()
+    },
+    {
+      risk: "Delayed timeline",
+      likelihood: 4,
+      impact: 3,
+      score: 12,
+      mitigation: "",
+      lastUpdated: new Date().toLocaleDateString()
+    },
+    {
+      risk: "Regulatory issues",
+      likelihood: 2,
+      impact: 5,
+      score: 10,
+      mitigation: "",
+      lastUpdated: new Date().toLocaleDateString()
+    },
+    {
+      risk: "Resource shortage",
+      likelihood: 5,
+      impact: 4,
+      score: 20,
+      mitigation: "",
+      lastUpdated: new Date().toLocaleDateString()
+    }
+  ];
 
-  try {
-    const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo", 
-      messages: [
-        { role: "system", content: systemMessage },
-        { role: "user", content: prompt },
-      ],
-      max_tokens: 300,
-    });
-
-    const risksText = completion.choices[0].message.content.trim();
-    const risksArray = risksText.split("\n").filter(r => r.trim() !== "");
-
-    res.json({ risks: risksArray });
-  } catch (error) {
-    console.error("=== OpenAI API call failed ===");
-    console.error(error);
-
-    const dummyRisks = [
-      "Budget overrun",
-      "Delayed timeline",
-      "Regulatory issues",
-      "Resource shortage"
-    ];
-
-    res.json({ risks: dummyRisks, warning: "Used fallback risks due to API error" });
-  }
+  res.json({ risks: dummyRisks });
 });
 
-// === Save Risks Endpoint ===
+// === Save Project and Risks ===
 app.post("/api/save", async (req, res) => {
   const { projectName, ratings } = req.body;
-
-  if (!projectName || !ratings) {
+  if (!projectName || !ratings)
     return res.status(400).json({ error: "Project name and ratings required" });
-  }
 
   try {
     const db = await openDB();
-
-    // Insert project
-    const result = await db.run(
-      "INSERT INTO projects (name) VALUES (?)",
-      projectName
-    );
+    const result = await db.run("INSERT INTO projects (name) VALUES (?)", projectName);
     const projectId = result.lastID;
 
-    // Insert each risk
-    const insertRisk = db.prepare(
-      "INSERT INTO risks (project_id, name, likelihood, impact, score) VALUES (?, ?, ?, ?, ?)"
+    const insertRisk = await db.prepare(
+      "INSERT INTO risks (project_id, name, likelihood, impact, score, mitigation, last_updated) VALUES (?, ?, ?, ?, ?, ?, ?)"
     );
 
-    for (const risk of ratings) {
-      await insertRisk.run(projectId, risk.risk, risk.likelihood, risk.impact, risk.score);
+    for (const r of ratings) {
+      await insertRisk.run(
+        projectId,
+        r.risk,
+        r.likelihood,
+        r.impact,
+        r.score,
+        r.mitigation || "",
+        r.lastUpdated || new Date().toLocaleDateString()
+      );
     }
     await insertRisk.finalize();
 
@@ -136,17 +138,39 @@ app.post("/api/save", async (req, res) => {
   }
 });
 
-// === Fetch project risks for Results page ===
-app.get("/api/project/:id", async (req, res) => {
+// === Delete Project and Risks ===
+app.delete("/api/project/:id", async (req, res) => {
   const projectId = req.params.id;
 
   try {
     const db = await openDB();
-    const risks = await db.all(
-      "SELECT name, likelihood, impact, score FROM risks WHERE project_id = ?",
-      projectId
-    );
 
+    // First delete associated risks
+    await db.run("DELETE FROM risks WHERE project_id = ?", projectId);
+
+    // Then delete the project itself
+    const result = await db.run("DELETE FROM projects WHERE id = ?", projectId);
+
+    if (result.changes === 0) {
+      return res.status(404).json({ error: "Project not found" });
+    }
+
+    res.json({ success: true, message: "Project deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to delete project" });
+  }
+});
+
+// === Get project risks for Results page ===
+app.get("/api/project/:id", async (req, res) => {
+  const projectId = req.params.id;
+  try {
+    const db = await openDB();
+    const risks = await db.all("SELECT * FROM risks WHERE project_id = ?", projectId);
+    if (risks.length === 0) {
+      return res.status(404).json({ error: "No risks found for this project" });
+    }
     res.json({ risks });
   } catch (err) {
     console.error(err);
@@ -154,14 +178,27 @@ app.get("/api/project/:id", async (req, res) => {
   }
 });
 
-// === Serve Frontend Files ===
-app.use(express.static(path.join(__dirname, "public")));
+// === Get history of projects ===
+app.get("/api/history", async (req, res) => {
+  try {
+    const db = await openDB();
+    const projects = await db.all("SELECT * FROM projects ORDER BY id DESC");
+    res.json({ projects });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch projects history" });
+  }
+});
 
-// SPA fallback for non-API requests
+// === Serve static files ===
+app.use(express.static(path.join(__dirname, "public")));
 app.get(/^(?!\/api).*/, (req, res) => {
   res.sendFile(path.join(__dirname, "public", "HomePage.html"));
 });
 
-// Start server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// === Start server ===
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server running at:  http://localhost:${PORT}`);
+  console.log(`Network access:     http://${getLocalIP()}:${PORT}`);
+});

@@ -1,43 +1,74 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <link rel="stylesheet" href="style.css">
-    <title>SafeStep - Results</title>
+  <meta charset="UTF-8" />
+  <title>Risk Report - Results</title>
+
+  <link rel="stylesheet" href="style.css" />
+
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
-<header>
-    <div class="blade">
-        <div></div><div></div><div></div>
-    </div>
-    <div class="appname">SafeStep</div>
-</header>
-<main>
-    <h3>Risk Report</h3>
-    <button onclick="saveReport()">Save</button>
 
-    <table border="1" cellpadding="8" style="width:100%; margin-top:15px;">
-        <thead>
-            <tr>
-                <th>Risk</th>
-                <th>Impact</th>
-                <th>Likelihood</th>
-                <th>Score</th>
-            </tr>
-        </thead>
-        <tbody id="riskTableBody"></tbody>
+  <header>
+  <div class="blade">
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+  <span class="appname">SafeStep</span>
+
+  <style>
+    .filters-container {
+    display: flex;     
+    gap: 10px;         
+    justify-content: flex-start; 
+    margin-bottom: 15px;
+  }
+</style>
+</header>
+
+
+<nav id="sidebar">
+  <a href="HomePage.html">Home</a>
+  <a href="HistoryPage.html">History</a>
+</nav>
+
+  <main>
+    <h1>Risk Report</h1>
+
+    <div class="filters-container">
+      <button id ="FilterButton" onclick="applyFilter('alphabetical')">Sort Alphabetically</button>
+      <button id ="FilterButton" onclick="applyFilter('score')">Sort by Risk Score</button>
+      <button id="exportBtn">Export as PDF</button>
+    </div>
+
+    <table id="resultsTable">
+      <thead>
+        <tr>
+          <th>Description</th>
+          <th>Mitigation Plan</th>
+          <th>Likelihood</th>
+          <th>Impact</th>
+          <th>Score</th>
+          <th>Last Time Updated</th>
+        </tr>
+      </thead>
+      <tbody id="resultsTableBody"></tbody>
     </table>
 
-    <canvas id="riskMatrix" width="400" height="200" style="margin-top:20px;"></canvas>
-    <canvas id="riskGraph" width="400" height="200" style="margin-top:20px;"></canvas>
-</main>
+    <h2>Risk Scores Overview</h2>
+    <div class="chart-container">
+      <canvas id="resultsChart" width="600" height="300"></canvas>
+    </div>
+  </main>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="charts.js"></script>
 
-<script>
-function saveReport() {
-    alert("Report saved! (In real app, this will store in Firebase)");
-}
-</script>
+  <script src="blade.js"></script>
+  <script src="results.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

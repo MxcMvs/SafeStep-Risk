@@ -1,36 +1,61 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <link rel="stylesheet" href="style.css">
-    <title>SafeStep - Home</title>
+  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>SafeStep - Home</title>
+
 </head>
 <body>
+    
 <header>
-    <div class="blade"><div></div><div></div><div></div></div>
-    <div class="appname">SafeStep</div>
+  <div class="blade">
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+  <span class="appname">SafeStep</span>
 </header>
 
-<main>
-    <h2>How can we help you?</h2>
+<nav id="sidebar">
+  <a href="HomePage.html">Home</a>
+  <a href="HistoryPage.html">History</a>
+</nav>
 
-    <form id="promptForm">
-        <select id="projectType">
-            <option value="">Select Project Type (optional)</option>
-            <option>Tech Startup</option>
-            <option>Construction</option>
-            <option>Investment</option>
-            <option>Event</option>
-            <option>Other</option>
-        </select>
 
-        <textarea id="projectPrompt" placeholder="Describe your project..." rows="5"></textarea>
+<section id="intro" style="text-align: center; margin: 40px 0;">
+  <h1 style="font-size: 3em; margin-bottom: 10px;">Why risk it?</h1>
+  <p style="font-size: 1.2em; max-width: 600px; margin: 0 auto;">
+    SafeStep helps you identify, rate, and mitigate risks for your projects easily. 
+    Enter your project details and let SafeStep analyze potential risks so you can make informed decisions.
+  </p>
+</section>
 
-        <button type="submit">Analyze Risks</button>
-    </form>
 
-    <div id="resultsContainer"></div>
-</main>
+<input type="text" id="projectName" placeholder="Project Name"><br><br>
+<textarea id="projectPrompt" placeholder="Describe your project..." rows="5" cols="50"></textarea><br><br>
+<button id="analyzeBtn">Analyze Risks</button>
 
+<script>
+  document.getElementById("analyzeBtn").addEventListener("click", async () => {
+    const projectName = document.getElementById("projectName").value.trim();
+    const prompt = document.getElementById("projectPrompt").value.trim();
+    if (!projectName || !prompt) return alert("Enter project name and description");
+
+    const res = await fetch("/api/analyze", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt })
+    });
+    const data = await res.json();
+
+    const projectData = { name: projectName, risks: data.risks };
+    localStorage.setItem("projectData", JSON.stringify(projectData));
+    window.location.href = "RatingPage.html";
+  });
+</script>
+<script src="blade.js"></script> 
 <script src="app.js"></script>
+
 </body>
 </html>
